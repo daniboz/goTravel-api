@@ -1,55 +1,79 @@
-const User = require("../models/User")
-
+const User = require("../models/User");
 const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");
 
-
 module.exports = {
-    createUser: async (req, res, next) => {
+  createUser: async (req, res, next) => {
+    try {
+      const { username, email, password } = req.body;
 
-        const newUser = new User({
-            username: req.body.username,
-            email: req.body.email,
-            password: CryptoJS.AES.encrypt(req.body.password, process.env.SECRET).toString(),
-        });
+      // Check if the username or email already exists
+      const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+      if (existingUser) {
+        return res.status(409).json({ status: false, message: "Username or email already exists" });
+      }
 
-        try {
-            await newUser.save();
+      const newUser = new User({
+        username,
+        email,
+        password: CryptoJS.AES.encrypt(password, process.env.SECRET).toString(),
+      });
 
-            res.status(201).json({ status: true, message: "User successfully created" })
-        } catch (error) {
-            return next(error)
-        }
-    },
+      await newUser.save();
 
+      // Automatically log in the user after successful registration
+      const userToken = jwt.sign(
+        {
+          id: newUser._id
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "210d" }
+      );
 
-    loginUser: async (req, res, next)=> {
-        try {
-            const user = await User.findOne({email: req.body.email});
-
-            if(!user){
-                return res.status(401).json({status: false, message: "User not found"});
-            }
-
-
-            const decryptedPassword = CryptoJS.AES.decrypt(user.password, process.env.SECRET);
-            const decryptedString = decryptedPassword.toString(CryptoJS.enc.Utf8);
-
-            if(decryptedString !== req.body.password){
-                return res.status(401).json({status: false, message: "Wrong password"});
-            }
-
-            const userToken = jwt.sign(
-                {
-                    id: user._id
-                },process.env.JWT_SECRET, {expiresIn: "21d"}
-            );
-
-            const user_id = user._id;
-
-            res.status(200).json({status: true, id: user_id, token: userToken})
-        } catch (error) {
-            return next(error)
-        }
+      res.status(201).json({ status: true, message: "User successfully created", token: userToken });
+    } catch (error) {
+      return next(error);
     }
-}
+  },
+
+  loginUser: async (req, res, next) => {
+    try {
+      const { usernameOrEmail, password } = req.body;
+      console.log('Login request received with data:', req.body);
+
+      // Search for user by either username or email
+      const user = await User.findOne({
+        $or: [{ email: usernameOrEmail }, { username: usernameOrEmail }]
+      });
+      console.log('User found:', user);
+
+      if (!user) {
+        console.log('User not found');
+        return res.status(401).json({ status: false, message: "User not found" });
+      }
+
+      const decryptedPassword = CryptoJS.AES.decrypt(user.password, process.env.SECRET);
+      const decryptedString = decryptedPassword.toString(CryptoJS.enc.Utf8);
+      console.log('Decrypted password:', decryptedString);
+
+      if (decryptedString !== password) {
+        console.log('Wrong password');
+        return res.status(401).json({ status: false, message: "Wrong password" });
+      }
+
+      const userToken = jwt.sign(
+        {
+          id: user._id
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "210d" }
+      );
+
+      console.log('User authenticated, token generated:', userToken);
+      res.status(200).json({ status: true, id: user._id, token: userToken });
+    } catch (error) {
+      console.error('Error during login:', error);
+      return next(error);
+    }
+  }
+};
