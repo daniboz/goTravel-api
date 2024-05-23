@@ -1,8 +1,7 @@
-const router = require("express").Router();
-const userController = require('../controllers/userController')
-const {verifyToken} = require("../middleware/jwt_token")
+const express = require('express');
+const router = express.Router();
+const userController = require('../controllers/userController');
 
-router.delete('/',verifyToken, userController.deleteUser)
-router.get('/',verifyToken,userController.getUser)
+router.get('/:id', userController.getUserById);
 
 module.exports = router;
