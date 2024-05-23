@@ -46,4 +46,30 @@ const filterAttractions = async (req, res) => {
   }
 };
 
-module.exports = { filterAttractions };
+const getAttractionDetails = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const attraction = await Attraction.findById(id).populate({
+      path: 'reviews.user',
+      select: 'username profile'
+    });
+
+    if (!attraction) {
+      console.log('No attraction found with the given id');
+      return res.status(404).json({ message: 'Attraction not found' });
+    }
+
+    console.log('Populated Attraction with Reviews:', JSON.stringify(attraction.reviews, null, 2));
+    res.status(200).json(attraction);
+  } catch (error) {
+    console.error('Error fetching attraction details:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+
+
+
+
+module.exports = { filterAttractions, getAttractionDetails };
