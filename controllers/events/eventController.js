@@ -1,4 +1,4 @@
-const Event = require('../models/Event');
+const Event = require('../../models/Event');
 
 const filterEvents = async (req, res) => {
   const { query, types, ratings, durations, suitabilities } = req.query;
@@ -49,4 +49,29 @@ const filterEvents = async (req, res) => {
   }
 };
 
-module.exports = { filterEvents };
+const getEventDetails = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const event = await Event.findById(id).populate({
+      path: 'reviews.user',
+      select: 'username profile'
+    });
+
+    if (!event) {
+      console.log('No event found with the given id');
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    console.log('Populated Event with Reviews:', JSON.stringify(event.reviews, null, 2));
+    res.status(200).json(event);
+  } catch (error) {
+    console.error('Error fetching event details:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+module.exports = getEventDetails;
+
+
+module.exports = { filterEvents, getEventDetails };
