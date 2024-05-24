@@ -1,32 +1,31 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const RestaurantSchema = new mongoose.Schema({
-  name: String,
-  imageUrl: String,
-  description: String,
-  coordinates: {
-    latitude: Number,
-    longitude: Number
-  },
-  rating: Number,
-  location: {
-    city: String,
-    country: String
-  },
-  reviewCount: Number,
-  hours: String,
-  types: [String], // Added to support filtering by cuisine type
-  priceRange: String, // Added to support filtering by price range
-  dietaryOptions: [String], // Added to support filtering by dietary options
-  reviews: [{
-    user: {
-      username: String,
-      profile: String
-    },
-    rating: Number,
-    review: String,
-    updatedAt: { type: Date, default: Date.now }
-  }]
+const reviewSchema = new Schema({
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  rating: { type: Number, required: true },
+  review: { type: String, required: true },
+  updatedAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Restaurant', RestaurantSchema);
+const restaurantSchema = new Schema({
+  name: { type: String, required: true },
+  description: { type: String, required: true },
+  imageUrl: { type: String, required: true },
+  location: {
+    city: { type: String, required: true },
+    country: { type: String, required: true }
+  },
+  coordinates: {
+    latitude: { type: Number, required: true },
+    longitude: { type: Number, required: true }
+  },
+  types: [String],
+  priceRange: { type: String, required: true },
+  dietaryOptions: [String],
+  rating: { type: Number, default: 0 },
+  reviewCount: { type: Number, default: 0 },
+  reviews: [reviewSchema]
+});
+
+module.exports = mongoose.model('Restaurant', restaurantSchema);
