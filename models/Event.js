@@ -1,32 +1,32 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const EventSchema = new mongoose.Schema({
-  name: String,
-  imageUrl: String,
-  description: String,
-  date: String,
-  coordinates: {
-    latitude: Number,
-    longitude: Number
-  },
-  rating: Number,
-  location: {
-    city: String,
-    country: String
-  },
-  reviewCount: Number,
-  types: [String], // Added for filtering by type
-  duration: String, // Added for filtering by duration
-  suitability: [String], // Added for filtering by suitability
-  reviews: [{
-    user: {
-      username: String,
-      profile: String
-    },
-    rating: Number,
-    review: String,
-    updatedAt: { type: Date, default: Date.now }
-  }]
+const reviewSchema = new Schema({
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  rating: { type: Number, required: true },
+  review: { type: String, required: true },
+  updatedAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Event', EventSchema);
+const eventSchema = new Schema({
+  name: { type: String, required: true },
+  imageUrl: { type: String, required: true },
+  description: { type: String, required: true },
+  date: { type: String, required: true },
+  coordinates: {
+    latitude: { type: Number, required: true },
+    longitude: { type: Number, required: true }
+  },
+  rating: { type: Number, default: 0 },
+  location: {
+    city: { type: String, required: true },
+    country: { type: String, required: true }
+  },
+  reviewCount: { type: Number, default: 0 },
+  types: [String], // For filtering by type
+  duration: { type: String }, // For filtering by duration
+  suitability: [String], // For filtering by suitability
+  reviews: [reviewSchema]
+});
+
+module.exports = mongoose.model('Event', eventSchema);
