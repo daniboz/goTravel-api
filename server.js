@@ -6,10 +6,11 @@ const bodyParser = require('body-parser');
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const searchRouter = require("./routes/search");
-const attractionRouter = require("./routes/attraction");
-const restaurantRouter = require("./routes/restaurant");
+const attractionRouter = require("./routes/attractions/attraction");
+const restaurantRouter = require("./routes/restaurants/restaurant");
 const eventRouter = require("./routes/event");
-const reviewRouter = require('./routes/review');
+const attractionReviewRouter = require('./routes/attractions/attractionReview');
+const restaurantReviewRouter = require('./routes/restaurants/restaurantReview');
 const errorHandler = require('./middleware/errorHandling');
 const port = 5003;
 
@@ -28,7 +29,8 @@ app.use('/api/search', searchRouter);
 app.use('/api/attractions', attractionRouter);
 app.use('/api/restaurants', restaurantRouter);
 app.use('/api/events', eventRouter);
-app.use('/api/reviews', reviewRouter);
+app.use('/api/reviews', attractionReviewRouter);
+app.use('/api/restaurant-reviews', restaurantReviewRouter);
 
 app.use(errorHandler);
 

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const Attraction = require('../models/Attraction'); // Update the path as necessary
-const User = require('../models/User'); // Update the path as necessary
+const Attraction = require('../../models/Attraction'); // Update the path as necessary
+const User = require('../../models/User'); // Update the path as necessary
 
 dotenv.config();
 

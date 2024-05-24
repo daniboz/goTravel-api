@@ -1,4 +1,4 @@
-const Attraction = require('../models/Attraction');
+const Attraction = require('../../models/Attraction');
 
 const filterAttractions = async (req, res) => {
   const { query, types, ratings, durations, suitabilities } = req.query;

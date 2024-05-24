@@ -1,6 +1,6 @@
 // controllers/reviewController.js
-const Attraction = require('../models/Attraction');
-const User = require('../models/User');
+const Attraction = require('../../models/Attraction');
+const User = require('../../models/User');
 
 const addReview = async (req, res) => {
   const { placeId, userId, review, rating } = req.body;
@@ -80,5 +80,24 @@ const deleteReview = async (req, res) => {
   }
 };
 
+const getReviews = async (req, res) => {
+  const { placeId } = req.params;
+  console.log(`Fetching reviews for attraction ID: ${placeId}`);
 
-module.exports = { addReview, deleteReview };
+  try {
+    const attraction = await Attraction.findById(placeId).populate('reviews.user');
+    if (!attraction) {
+      console.log(`Attraction with ID ${placeId} not found`);
+      return res.status(404).json({ message: 'Attraction not found' });
+    }
+
+    console.log(`Found ${attraction.reviews.length} reviews for attraction ID: ${placeId}`);
+    res.status(200).json(attraction.reviews);
+  } catch (error) {
+    console.error('Error fetching reviews:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+
+module.exports = { addReview, deleteReview, getReviews };
