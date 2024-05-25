@@ -21,6 +21,7 @@ const attractionSchema = new Schema({
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true }
   },
+  hours: { type: String, required: true },
   duration: { type: String, required: true },
   types: [String],
   suitability: [String],

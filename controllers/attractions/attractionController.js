@@ -68,8 +68,80 @@ const getAttractionDetails = async (req, res) => {
   }
 };
 
+const getAllAttractions = async (req, res) => {
+  try {
+    const attractions = await Attraction.find();
+    res.json(attractions);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
 
+const createAttraction = async (req, res) => {
+  const { name, description, imageUrl, location, coordinates, types, duration, suitability, hours } = req.body;
+  
+  const newAttraction = new Attraction({
+    name,
+    description,
+    imageUrl,
+    location,
+    coordinates,
+    types,
+    duration,
+    suitability,
+    hours,
+  });
 
+  try {
+    const savedAttraction = await newAttraction.save();
+    res.status(201).json(savedAttraction);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
 
+const updateAttraction = async (req, res) => {
+  const { id } = req.params;
+  const { name, description, imageUrl, location, coordinates, types, duration, suitability, hours } = req.body;
 
-module.exports = { filterAttractions, getAttractionDetails };
+  try {
+    const updatedAttraction = await Attraction.findByIdAndUpdate(
+      id,
+      { name, description, imageUrl, location, coordinates, types, duration, suitability, hours },
+      { new: true }
+    );
+
+    if (!updatedAttraction) {
+      return res.status(404).json({ message: 'Attraction not found' });
+    }
+
+    res.json(updatedAttraction);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+const deleteAttraction = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedAttraction = await Attraction.findByIdAndDelete(id);
+
+    if (!deletedAttraction) {
+      return res.status(404).json({ message: 'Attraction not found' });
+    }
+
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+module.exports = {
+  filterAttractions,
+  getAttractionDetails,
+  getAllAttractions,
+  createAttraction,
+  updateAttraction,
+  deleteAttraction,
+};
