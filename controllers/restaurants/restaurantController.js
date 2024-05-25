@@ -71,4 +71,85 @@ const getRestaurantDetails = async (req, res) => {
   }
 };
 
-module.exports = { filterRestaurants, getRestaurantDetails};
+const getAllRestaurants = async (req, res) => {
+  try {
+    const restaurants = await Restaurant.find();
+    res.json(restaurants);
+  } catch (error) {
+    console.error('Error fetching all restaurants:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+const createRestaurant = async (req, res) => {
+  const { name, description, imageUrl, location, coordinates, types, priceRange, dietaryOptions, hours } = req.body;
+  
+  const newRestaurant = new Restaurant({
+    name,
+    description,
+    imageUrl,
+    location,
+    coordinates,
+    types,
+    priceRange,
+    dietaryOptions,
+    hours,
+  });
+
+  try {
+    const savedRestaurant = await newRestaurant.save();
+    res.status(201).json(savedRestaurant);
+  } catch (error) {
+    console.error('Error creating restaurant:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+const updateRestaurant = async (req, res) => {
+  const { id } = req.params;
+  const { name, description, imageUrl, location, coordinates, types, priceRange, dietaryOptions, hours } = req.body;
+
+  try {
+    const updatedRestaurant = await Restaurant.findByIdAndUpdate(
+      id,
+      { name, description, imageUrl, location, coordinates, types, priceRange, dietaryOptions, hours },
+      { new: true }
+    );
+
+    if (!updatedRestaurant) {
+      return res.status(404).json({ message: 'Restaurant not found' });
+    }
+
+    res.json(updatedRestaurant);
+  } catch (error) {
+    console.error('Error updating restaurant:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+
+const deleteRestaurant = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedRestaurant = await Restaurant.findByIdAndDelete(id);
+
+    if (!deletedRestaurant) {
+      return res.status(404).json({ message: 'Restaurant not found' });
+    }
+
+    res.status(204).send();
+  } catch (error) {
+    console.error('Error deleting restaurant:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+module.exports = {
+  filterRestaurants,
+  getRestaurantDetails,
+  getAllRestaurants,
+  createRestaurant,
+  updateRestaurant,
+  deleteRestaurant,
+};

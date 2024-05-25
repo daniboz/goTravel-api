@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 module.exports = {
   createUser: async (req, res, next) => {
     try {
-      const { username, email, password } = req.body;
+      const { username, email, password, isAdmin } = req.body;
 
       // Check if the username or email already exists
       const existingUser = await User.findOne({ $or: [{ username }, { email }] });
@@ -17,6 +17,7 @@ module.exports = {
         username,
         email,
         password: CryptoJS.AES.encrypt(password, process.env.SECRET).toString(),
+        isAdmin
       });
 
       await newUser.save();
@@ -24,7 +25,8 @@ module.exports = {
       // Automatically log in the user after successful registration
       const userToken = jwt.sign(
         {
-          id: newUser._id
+          id: newUser._id,
+          isAdmin: newUser.isAdmin
         },
         process.env.JWT_SECRET,
         { expiresIn: "210d" }
@@ -63,14 +65,15 @@ module.exports = {
 
       const userToken = jwt.sign(
         {
-          id: user._id
+          id: user._id,
+          isAdmin: user.isAdmin
         },
         process.env.JWT_SECRET,
         { expiresIn: "210d" }
       );
 
       console.log('User authenticated, token generated:', userToken);
-      res.status(200).json({ status: true, id: user._id, token: userToken });
+      res.status(200).json({ status: true, id: user._id, token: userToken, isAdmin: user.isAdmin });
     } catch (error) {
       console.error('Error during login:', error);
       return next(error);
