@@ -71,7 +71,80 @@ const getEventDetails = async (req, res) => {
   }
 };
 
-module.exports = getEventDetails;
+const getAllEvents = async (req, res) => {
+  try {
+    const events = await Event.find();
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
 
+const createEvent = async (req, res) => {
+  const { name, description, imageUrl, location, coordinates, types, duration, suitability, date } = req.body;
+  
+  const newEvent = new Event({
+    name,
+    description,
+    imageUrl,
+    location,
+    coordinates,
+    types,
+    duration,
+    suitability,
+    date,
+  });
 
-module.exports = { filterEvents, getEventDetails };
+  try {
+    const savedEvent = await newEvent.save();
+    res.status(201).json(savedEvent);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+const updateEvent = async (req, res) => {
+  const { id } = req.params;
+  const { name, description, imageUrl, location, coordinates, types, duration, suitability, date } = req.body;
+
+  try {
+    const updatedEvent = await Event.findByIdAndUpdate(
+      id,
+      { name, description, imageUrl, location, coordinates, types, duration, suitability, date },
+      { new: true }
+    );
+
+    if (!updatedEvent) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    res.json(updatedEvent);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+const deleteEvent = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedEvent = await Event.findByIdAndDelete(id);
+
+    if (!deletedEvent) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+module.exports = {
+  filterEvents,
+  getEventDetails,
+  getAllEvents,
+  createEvent,
+  updateEvent,
+  deleteEvent,
+};
