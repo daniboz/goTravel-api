@@ -20,6 +20,7 @@ const restaurantSchema = new Schema({
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true }
   },
+  hours: { type: String, required: true },
   types: [String],
   priceRange: { type: String, required: true },
   dietaryOptions: [String],

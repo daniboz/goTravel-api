@@ -5,6 +5,7 @@ const UserSchema = new mongoose.Schema({
     email: {type: String, require: true, unique: true },
     password: {type: String, require: true},
     profile: {type: String, default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScJXWdvwDZC0RF_VSzzP8aXSX9Sc_VPAtuew&usqp=CAU"},
+    isAdmin: {type: Boolean, default: false}
 }, {timestamps: true});
 
 module.exports = mongoose.model("User", UserSchema);
