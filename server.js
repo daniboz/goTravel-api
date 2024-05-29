@@ -12,6 +12,7 @@ const eventRouter = require("./routes/events/event");
 const attractionReviewRouter = require('./routes/attractions/attractionReview');
 const restaurantReviewRouter = require('./routes/restaurants/restaurantReview');
 const eventReviewRouter = require('./routes/events/eventReview');
+const calendarEntryRouter = require('./routes/calendarEntry');
 const errorHandler = require('./middleware/errorHandling');
 const port = 5003;
 
@@ -33,6 +34,7 @@ app.use('/api/events', eventRouter);
 app.use('/api/attraction-reviews', attractionReviewRouter);
 app.use('/api/restaurant-reviews', restaurantReviewRouter);
 app.use('/api/event-reviews', eventReviewRouter);
+app.use('/api/calendar-entries', calendarEntryRouter);
 
 app.use(errorHandler);
 
