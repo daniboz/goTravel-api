@@ -21,9 +21,12 @@ const errorHandler = require('./middleware/errorHandling');
 const port = 5003;
 
 dotenv.config();
-mongoose.connect(process.env.MONGO_URL)
+
+if (process.env.NODE_ENV !== 'test') {
+  mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log("database connected"))
   .catch((err) => console.log(err));
+}
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
@@ -84,13 +87,12 @@ app.post('/api/upload', upload.single('profile'), (req, res) => {
   });
 });
 
-
 app.put('/api/users/me', upload.single('profile'), async (req, res) => {
   const { username, password } = req.body;
   const profileImage = req.file ? `/uploads/${req.file.filename}` : undefined;
 
   try {
-    const user = await User.findById(req.user.id); 
+    const user = await User.findById(req.user.id);
     user.username = username || user.username;
     if (password) user.password = password;
     if (profileImage) user.profile = profileImage;
@@ -105,4 +107,8 @@ app.put('/api/users/me', upload.single('profile'), async (req, res) => {
 
 app.use(errorHandler);
 
-app.listen(port, () => console.log(`Server running on port ${port}`));
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => console.log(`Server running on port ${port}`));
+}
+
+module.exports = app;

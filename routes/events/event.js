@@ -1,4 +1,3 @@
-// routes/events/event.js
 const express = require('express');
 const {
   filterEvents,
@@ -13,9 +12,9 @@ const router = express.Router();
 
 router.get('/filter', filterEvents);
 router.get('/:id', getEventDetails);
-router.get('/', getAllEvents); // Get all events
-router.post('/', createEvent); // Create a new event
-router.put('/:id', updateEvent); // Update an event
-router.delete('/:id', deleteEvent); // Delete an event
+router.get('/', getAllEvents); 
+router.post('/', createEvent); 
+router.put('/:id', updateEvent); 
+router.delete('/:id', deleteEvent); 
 
 module.exports = router;

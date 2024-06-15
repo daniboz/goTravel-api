@@ -1,4 +1,3 @@
-// routes/calendarEntries.js
 const express = require('express');
 const { getEntries, createEntry, updateEntry, deleteEntry } = require('../controllers/calendarEntryController');
 const verifyToken = require('../middleware/jwt_token');

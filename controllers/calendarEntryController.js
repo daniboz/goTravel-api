@@ -1,4 +1,3 @@
-// controllers/calendarEntryController.js
 const CalendarEntry = require('../models/CalendarEntry');
 
 const getEntries = async (req, res) => {

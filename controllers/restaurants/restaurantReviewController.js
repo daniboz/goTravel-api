@@ -23,7 +23,6 @@ const addReview = async (req, res) => {
 
     restaurant.reviews.push(newReview);
 
-    // Update the average rating and review count
     restaurant.rating = (
       (restaurant.rating * restaurant.reviewCount + rating) /
       (restaurant.reviewCount + 1)
@@ -60,10 +59,8 @@ const deleteReview = async (req, res) => {
         return res.status(403).json({ message: 'Unauthorized' });
       }
   
-      // Remove the review
       restaurant.reviews.pull(reviewId);
   
-      // Update the average rating and review count
       if (restaurant.reviewCount > 1) {
         restaurant.rating = (
           (restaurant.rating * restaurant.reviewCount - review.rating) /

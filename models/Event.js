@@ -23,9 +23,9 @@ const eventSchema = new Schema({
     country: { type: String, required: true }
   },
   reviewCount: { type: Number, default: 0 },
-  types: [String], // For filtering by type
-  duration: { type: String }, // For filtering by duration
-  suitability: [String], // For filtering by suitability
+  types: [String],
+  duration: { type: String },
+  suitability: [String],
   reviews: [reviewSchema]
 });
 

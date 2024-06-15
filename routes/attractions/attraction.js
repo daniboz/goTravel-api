@@ -1,4 +1,3 @@
-// routes/attractions/attraction.js
 const express = require('express');
 const {
   filterAttractions,
@@ -13,9 +12,9 @@ const router = express.Router();
 
 router.get('/filter', filterAttractions);
 router.get('/:id', getAttractionDetails);
-router.get('/', getAllAttractions); // Get all attractions
-router.post('/', createAttraction); // Create a new attraction
-router.put('/:id', updateAttraction); // Update an attraction
-router.delete('/:id', deleteAttraction); // Delete an attraction
+router.get('/', getAllAttractions);
+router.post('/', createAttraction);
+router.put('/:id', updateAttraction);
+router.delete('/:id', deleteAttraction);
 
 module.exports = router;
