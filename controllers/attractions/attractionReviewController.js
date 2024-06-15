@@ -1,4 +1,3 @@
-// controllers/reviewController.js
 const Attraction = require('../../models/Attraction');
 const User = require('../../models/User');
 
@@ -24,7 +23,6 @@ const addReview = async (req, res) => {
 
     attraction.reviews.push(newReview);
 
-    // Update the average rating and review count
     attraction.rating = (
       (attraction.rating * attraction.reviewCount + rating) /
       (attraction.reviewCount + 1)
@@ -57,10 +55,8 @@ const deleteReview = async (req, res) => {
       return res.status(403).json({ message: 'Unauthorized' });
     }
 
-    // Remove the review
     attraction.reviews.pull(reviewId);
 
-    // Update the average rating and review count
     if (attraction.reviewCount > 1) {
       attraction.rating = (
         (attraction.rating * attraction.reviewCount - review.rating) /

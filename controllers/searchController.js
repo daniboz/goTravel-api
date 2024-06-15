@@ -4,7 +4,7 @@ const Restaurant = require('../models/Restaurant');
 
 exports.search = async (req, res) => {
   const { query } = req.query;
-  const regex = new RegExp(`^${query}$`, 'i'); // exact match with case-insensitivity
+  const regex = new RegExp(`^${query}$`, 'i');
 
   try {
     const attractions = await Attraction.find({

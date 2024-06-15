@@ -24,7 +24,6 @@ const addReview = async (req, res) => {
 
     event.reviews.push(newReview);
 
-    // Update the average rating and review count
     event.rating = (
       (event.rating * event.reviewCount + rating) /
       (event.reviewCount + 1)
@@ -61,10 +60,8 @@ const deleteReview = async (req, res) => {
       return res.status(403).json({ message: 'Unauthorized' });
     }
 
-    // Remove the review
     event.reviews.pull(reviewId);
 
-    // Update the average rating and review count
     if (event.reviewCount > 1) {
       event.rating = (
         (event.rating * event.reviewCount - review.rating) /

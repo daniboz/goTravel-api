@@ -7,7 +7,6 @@ module.exports = {
     try {
       const { username, email, password, isAdmin } = req.body;
 
-      // Check if the username or email already exists
       const existingUser = await User.findOne({ $or: [{ username }, { email }] });
       if (existingUser) {
         return res.status(409).json({ status: false, message: "Username or email already exists" });
@@ -22,7 +21,6 @@ module.exports = {
 
       await newUser.save();
 
-      // Automatically log in the user after successful registration
       const userToken = jwt.sign(
         {
           id: newUser._id,
@@ -43,7 +41,6 @@ module.exports = {
       const { usernameOrEmail, password } = req.body;
       console.log('Login request received with data:', req.body);
 
-      // Search for user by either username or email
       const user = await User.findOne({
         $or: [{ email: usernameOrEmail }, { username: usernameOrEmail }]
       });
